@@ -3,16 +3,18 @@
         xmlns:vm="using:Stardrop.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:i="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
+        xmlns:i="using:Stardrop.Controls.Icons"
         mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="150"
         x:Class="Stardrop.Views.WarningWindow"
+        x:CompileBindings="False"
         Title="Warning"
         MinWidth="300"
         MinHeight="150"
         Width="300"
-        Height="150"
         Background="{DynamicResource ThemeBackgroundBrush}"
-        HasSystemDecorations="false"
+        WindowDecorations="None"
+        SizeToContent="Height"
+        CanResize="False"
         Icon="/Assets/icon.ico">
 
 	<Window.Styles>
@@ -31,28 +33,14 @@
 		<StaticResource x:Key="SystemControlForegroundBaseHighBrush" ResourceKey="ThemeForegroundHighBrush"/>
 	</Window.Resources>
 	
-	<Border BorderBrush="{DynamicResource HighlightBrush}" BorderThickness="1">
-		<Grid>
-			<Grid.RowDefinitions>
-				<RowDefinition Height="Auto" />
-				<RowDefinition Height="Auto" />
-				<RowDefinition Height="25" />
-			</Grid.RowDefinitions>
-
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="10" />
-				<ColumnDefinition Width="*" />
-				<ColumnDefinition Width="10" />
-			</Grid.ColumnDefinitions>
-
-			<StackPanel Grid.Column="1">
-				<TextBlock Grid.Row="0" Text="{Binding WarningText}" TextWrapping="Wrap" Foreground="{DynamicResource ThemeForegroundBrush}" HorizontalAlignment="Center" TextAlignment="Center"  Margin="0 35 0 20"/>
-				<ProgressBar Grid.Row="1" IsVisible="{Binding IsProgressBarVisible}" Margin="0 10" Height="20"
-							  Minimum="0" Value="{Binding ProgressBarValue}"
-							  Foreground="{DynamicResource HighlightBrush}"
-							  ShowProgressText="True"/>
-				<Button Grid.Row="2" IsVisible="{Binding IsButtonVisible}" Name="unlockButton" IsCancel="True" Content="{Binding ButtonText}" Click="UnlockButton_Click" HorizontalAlignment="Center" BorderBrush="{DynamicResource HighlightBrush}" Foreground="{DynamicResource ThemeForegroundBrush}" Background="Transparent"/>
-			</StackPanel>
-		</Grid>
+	<Border BorderBrush="{DynamicResource HighlightBrush}" BorderThickness="1" Padding="16,35,16,20">
+		<StackPanel Spacing="16">
+			<TextBlock Text="{Binding WarningText}" TextWrapping="Wrap" Foreground="{DynamicResource ThemeForegroundBrush}" HorizontalAlignment="Center" TextAlignment="Center"/>
+			<ProgressBar IsVisible="{Binding IsProgressBarVisible}" Height="20"
+						 Minimum="0" Value="{Binding ProgressBarValue}"
+						 Foreground="{DynamicResource HighlightBrush}"
+						 ShowProgressText="True"/>
+			<Button IsVisible="{Binding IsButtonVisible}" Name="unlockButton" IsCancel="True" Content="{Binding ButtonText}" Click="UnlockButton_Click" MinWidth="100" HorizontalAlignment="Center" BorderBrush="{DynamicResource HighlightBrush}" Foreground="{DynamicResource ThemeForegroundBrush}" Background="Transparent"/>
+		</StackPanel>
 	</Border>
 </Window>

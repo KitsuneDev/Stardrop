@@ -3,19 +3,19 @@
         xmlns:vm="using:Stardrop.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:i="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
+        xmlns:i="using:Stardrop.Controls.Icons"
 		xmlns:i18n="clr-namespace:Stardrop.Utilities.Extension"
         mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="400"
         x:Class="Stardrop.Views.ProfileEditor"
+        x:CompileBindings="False"
         Title="{i18n:Translate ui.window.profiles.name}"
         MinWidth="400"
         MinHeight="300"
         Width="500"
         Height="400"
         Background="{DynamicResource ThemeBackgroundBrush}"
-        HasSystemDecorations="true"
-        ExtendClientAreaToDecorationsHint="true"
-        ExtendClientAreaChromeHints="NoChrome"
+        WindowDecorations="None"
+        ExtendClientAreaToDecorationsHint="True"
         ExtendClientAreaTitleBarHeightHint="-1"
         CanResize="True"
         Icon="/Assets/icon.ico">
@@ -55,7 +55,7 @@
 
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="*" />
-			<ColumnDefinition Width="50" />
+			<ColumnDefinition Width="Auto" />
 		</Grid.ColumnDefinitions>
 		<Border Grid.Row="0" BorderBrush="{DynamicResource HighlightBrush}" BorderThickness="0 0 0 2" Grid.ColumnSpan="2">
 			<Menu Name="menuBar" KeyboardNavigation.TabNavigation="None">
@@ -86,9 +86,9 @@
 			<Button Name="copyButton" Margin="0 15 0 15" i:Attached.Icon="mdi-content-copy" BorderBrush="{DynamicResource HighlightBrush}" Foreground="{DynamicResource ThemeForegroundBrush}" Background="Transparent"/>
 		</StackPanel>
 
-		<DockPanel Grid.Row="2" Grid.Column="1" Margin="0 0 0 10">
-			<Button Name="applyButton" ToolTip.Tip="{Binding ToolTip_Save}" i:Attached.Icon="mdi-check" Margin="-40 0 15 0" BorderBrush="{DynamicResource HighlightBrush}" Foreground="Green" Background="Transparent"/>
+		<StackPanel Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="12" Margin="0 0 15 10">
+			<Button Name="applyButton" ToolTip.Tip="{Binding ToolTip_Save}" i:Attached.Icon="mdi-check" BorderBrush="{DynamicResource HighlightBrush}" Foreground="Green" Background="Transparent"/>
 			<Button Name="cancelButton" IsCancel="True" ToolTip.Tip="{Binding ToolTip_Cancel}" i:Attached.Icon="mdi-cancel" BorderBrush="{DynamicResource HighlightBrush}" Foreground="Red" Background="Transparent"/>
-		</DockPanel>
+		</StackPanel>
 	</Grid>
 </Window>

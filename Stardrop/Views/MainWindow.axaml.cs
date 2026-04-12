@@ -3,6 +3,7 @@ using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml;
+using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using DynamicData;
 using DynamicData.Binding;
@@ -65,7 +66,7 @@ namespace Stardrop.Views
             var modGrid = this.FindControl<DataGrid>("modGrid");
             modGrid.IsReadOnly = true;
             modGrid.LoadingRow += (sender, e) => { e.Row.Header = e.Row.GetIndex() + 1; };
-            modGrid.Items = _viewModel.DataView;
+            modGrid.ItemsSource = _viewModel.DataView;
             modGrid.LoadingRowGroup += ModGrid_LoadingRowGroup;
 
             AddHandler(DragDrop.DropEvent, Drop);
@@ -122,7 +123,7 @@ namespace Stardrop.Views
             // Set profile list
             _editorView = new ProfileEditorViewModel(Pathing.GetProfilesFolderPath());
             var profileComboBox = this.FindControl<ComboBox>("profileComboBox");
-            profileComboBox.Items = _editorView.Profiles;
+            profileComboBox.ItemsSource = _editorView.Profiles;
             profileComboBox.SelectedIndex = 0;
             if (_editorView.Profiles.FirstOrDefault(p => p.Name == Program.settings.LastSelectedProfileName) is Profile oldProfile && oldProfile is not null)
             {
@@ -201,9 +202,6 @@ namespace Stardrop.Views
 
             Program.helper.Log($"Initialization complete!");
 
-#if DEBUG
-            this.AttachDevTools();
-#endif
         }
 
         private void ModGrid_LoadingRowGroup(object? sender, DataGridRowGroupHeaderEventArgs e)
@@ -256,7 +254,7 @@ namespace Stardrop.Views
             }
         }
 
-        private void MainWindow_Closing(object? sender, System.ComponentModel.CancelEventArgs e)
+        private void MainWindow_Closing(object? sender, WindowClosingEventArgs e)
         {
             Program.settings.LastSelectedProfileName = GetCurrentProfile().Name;
 
@@ -367,12 +365,28 @@ namespace Stardrop.Views
                 return;
             }
 
-            if (!e.Data.Contains(DataFormats.FileNames))
+            if (!e.DataTransfer.Contains(DataFormat.File))
             {
                 return;
             }
 
-            var addedMods = await AddMods(e.Data.GetFileNames()?.ToArray());
+            var files = e.DataTransfer.TryGetFiles();
+            if (files is null || files.Length == 0)
+            {
+                return;
+            }
+
+            var filePaths = files
+                .Select(file => file.Path?.LocalPath)
+                .Where(path => !string.IsNullOrEmpty(path))
+                .ToArray();
+
+            if (filePaths.Length == 0)
+            {
+                return;
+            }
+
+            var addedMods = await AddMods(filePaths);
 
             // TODO: Add optional setting to disable checking for updates when a new mod is installed?
             await CheckForModUpdates(addedMods, useCache: true, skipCacheCheck: true);
@@ -531,11 +545,19 @@ namespace Stardrop.Views
             {
                 originallySelectedModPaths.Add(selectedMod.Path);
             }
-            foreach (Mod mod in modGrid.Items)
+            if (modGrid.ItemsSource is System.Collections.IEnumerable items)
             {
-                if (originallySelectedModPaths.Contains(mod.Path))
+                foreach (var item in items)
                 {
-                    modGrid.SelectedItems.Add(mod);
+                    if (item is not Mod mod)
+                    {
+                        continue;
+                    }
+
+                    if (originallySelectedModPaths.Contains(mod.Path))
+                    {
+                        modGrid.SelectedItems.Add(mod);
+                    }
                 }
             }
 
@@ -1275,11 +1297,20 @@ namespace Stardrop.Views
                 return;
             }
 
-            OpenFileDialog dialog = new OpenFileDialog();
-            dialog.Filters.Add(new FileDialogFilter() { Name = "Mod Archive (*.zip, *.7z, *.rar)", Extensions = { "zip", "7z", "rar" } });
-            dialog.AllowMultiple = true;
+            var filePaths = await StoragePicker.OpenFilePathsAsync(
+                this,
+                "Select mod archives",
+                allowMultiple: true,
+                new[]
+                {
+                    new FilePickerFileType("Mod Archive (*.zip, *.7z, *.rar)")
+                    {
+                        Patterns = new[] { "*.zip", "*.7z", "*.rar" }
+                    }
+                },
+                Pathing.defaultModPath);
 
-            var addedMods = await AddMods(await dialog.ShowAsync(this));
+            var addedMods = await AddMods(filePaths);
 
             await CheckForModUpdates(addedMods, useCache: true, skipCacheCheck: true);
             await GetCachedModUpdates(_viewModel.Mods.ToList(), skipCacheCheck: true);

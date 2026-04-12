@@ -3,16 +3,18 @@
         xmlns:vm="using:Stardrop.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:i="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
+        xmlns:i="using:Stardrop.Controls.Icons"
         mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="150"
         x:Class="Stardrop.Views.MessageWindow"
+        x:CompileBindings="False"
         Title="Message"
         MinWidth="300"
         MinHeight="150"
         Width="300"
-        Height="150"
         Background="{DynamicResource ThemeBackgroundBrush}"
-        HasSystemDecorations="false"
+        WindowDecorations="None"
+        SizeToContent="Height"
+        CanResize="False"
         Icon="/Assets/icon.ico">
 
 	<Window.Styles>
@@ -24,23 +26,13 @@
 		</Style>
 	</Window.Styles>
 
-	<Border BorderBrush="{DynamicResource HighlightBrush}" BorderThickness="1">
-		<Grid>
-			<Grid.RowDefinitions>
-				<RowDefinition Height="Auto" />
-				<RowDefinition Height="Auto" />
-				<RowDefinition Height="25" />
-			</Grid.RowDefinitions>
-
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="25" />
-				<ColumnDefinition Width="*" />
-				<ColumnDefinition Width="25" />
-			</Grid.ColumnDefinitions>
-
-			<TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding MessageText}" TextWrapping="Wrap" TextAlignment="Center" Foreground="{DynamicResource ThemeForegroundBrush}" HorizontalAlignment="Center" Margin="0 35 0 20"/>
-			<Button Grid.Row="1"  Grid.Column="1" Name="positiveButton" Content="{Binding PositiveButtonText}" Click="PositiveButton_Click" HorizontalAlignment="Left" BorderBrush="{DynamicResource HighlightBrush}" Foreground="{DynamicResource ThemeForegroundBrush}" Background="Transparent" Margin="25 0 0 0"/>
-			<Button Grid.Row="1"  Grid.Column="1" Name="negativeButton" IsCancel="true" Content="{Binding NegativeButtonText}" Click="NegativeButton_Click" HorizontalAlignment="Right" BorderBrush="{DynamicResource HighlightBrush}" Foreground="{DynamicResource ThemeForegroundBrush}" Background="Transparent"  Margin="0 0 25 0"/>
-		</Grid>
+	<Border BorderBrush="{DynamicResource HighlightBrush}" BorderThickness="1" Padding="25,35,25,20">
+		<StackPanel Spacing="20">
+			<TextBlock Text="{Binding MessageText}" TextWrapping="Wrap" TextAlignment="Center" Foreground="{DynamicResource ThemeForegroundBrush}" HorizontalAlignment="Center"/>
+			<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="16">
+				<Button Name="positiveButton" Content="{Binding PositiveButtonText}" Click="PositiveButton_Click" MinWidth="100" BorderBrush="{DynamicResource HighlightBrush}" Foreground="{DynamicResource ThemeForegroundBrush}" Background="Transparent"/>
+				<Button Name="negativeButton" IsCancel="true" Content="{Binding NegativeButtonText}" Click="NegativeButton_Click" MinWidth="100" BorderBrush="{DynamicResource HighlightBrush}" Foreground="{DynamicResource ThemeForegroundBrush}" Background="Transparent"/>
+			</StackPanel>
+		</StackPanel>
 	</Border>
 </Window>

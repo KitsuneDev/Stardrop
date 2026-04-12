@@ -18,9 +18,6 @@ namespace Stardrop.Views
             _viewModel = new MessageWindowViewModel();
             DataContext = _viewModel;
 
-#if DEBUG
-            this.AttachDevTools();
-#endif
         }
 
         public MessageWindow(string messageText, string? positiveButtonText = null, string? negativeButtonText = null) : this()

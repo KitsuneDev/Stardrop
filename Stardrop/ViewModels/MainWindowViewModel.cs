@@ -19,16 +19,18 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text.Json;
+using System.Windows.Input;
 
 namespace Stardrop.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {
-        private string ChromeHint { get; set; } = "NoChrome";
-        private bool HasSystemDecorations { get; set; } = true;
-        private bool ShowTitle { get; set; } = true;
-        private bool ShowMainMenu { get; set; } = true;
-        private bool ShowWindowMenu { get; set; } = true;
+        public string ChromeHint { get; private set; } = "NoChrome";
+        public bool HasSystemDecorations { get; private set; } = true;
+        public bool ShowTitle { get; private set; } = true;
+        public bool ShowMainMenu { get; private set; } = true;
+        public bool ShowWindowMenu { get; private set; } = true;
+        public ICommand OpenBrowserCommand { get; }
 
         private DataGridPathGroupDescription _modPathGrouping = new DataGridPathGroupDescription(nameof(Mod.Path));
         private DataGridPathGroupDescription _rootPathGrouping = new DataGridPathGroupDescription(nameof(Mod.RootPath));
@@ -87,6 +89,7 @@ namespace Stardrop.ViewModels
 
         public MainWindowViewModel(string modsFilePath, string version)
         {
+            OpenBrowserCommand = new ActionCommand(OpenBrowser);
             DiscoverMods(modsFilePath);
             Version = $"v{version}";
             SmapiVersion = Program.settings.GameDetails?.SmapiVersion;
@@ -135,6 +138,32 @@ namespace Stardrop.ViewModels
             catch (Exception ex)
             {
                 Program.helper.Log($"Failed to utilize OpenBrowser with the url ({url}): {ex}");
+            }
+        }
+
+        private sealed class ActionCommand : ICommand
+        {
+            private readonly Action<string> _execute;
+
+            public ActionCommand(Action<string> execute)
+            {
+                _execute = execute;
+            }
+
+            public event EventHandler? CanExecuteChanged
+            {
+                add { }
+                remove { }
+            }
+
+            public bool CanExecute(object? parameter)
+            {
+                return true;
+            }
+
+            public void Execute(object? parameter)
+            {
+                _execute(parameter as string ?? String.Empty);
             }
         }
 

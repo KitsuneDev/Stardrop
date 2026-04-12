@@ -3,18 +3,18 @@
         xmlns:vm="using:Stardrop.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:i="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
+        xmlns:i="using:Stardrop.Controls.Icons"
 		xmlns:i18n="clr-namespace:Stardrop.Utilities.Extension"
         mc:Ignorable="d" d:DesignWidth="430" d:DesignHeight="650"
         x:Class="Stardrop.Views.SettingsWindow"
+        x:CompileBindings="False"
         Title="{i18n:Translate ui.window.settings.name}"
         MinWidth="430"
         MinHeight="430"
         Width="430"
         Background="{DynamicResource ThemeBackgroundBrush}"
-        HasSystemDecorations="true"
-        ExtendClientAreaToDecorationsHint="true"
-        ExtendClientAreaChromeHints="NoChrome"
+        WindowDecorations="None"
+        ExtendClientAreaToDecorationsHint="True"
         ExtendClientAreaTitleBarHeightHint="-1"
         CanResize="True"
         Icon="/Assets/icon.ico">
@@ -113,11 +113,7 @@
 										BorderThickness="1">
 									<ScrollViewer HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
 												  VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}">
-										<ItemsPresenter Name="PART_ItemsPresenter"
-														Items="{TemplateBinding Items}"
-														ItemsPanel="{TemplateBinding ItemsPanel}"
-														ItemTemplate="{TemplateBinding ItemTemplate}"
-														VirtualizationMode="{TemplateBinding VirtualizationMode}" />
+										<ItemsPresenter Name="PART_ItemsPresenter" />
 									</ScrollViewer>
 								</Border>
 							</Popup>

@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
+using Avalonia.Platform.Storage;
 using Avalonia.Styling;
 using SharpCompress.Common;
 using Stardrop.Models;
@@ -91,7 +92,7 @@ namespace Stardrop.Views
             }
 
             var themeComboBox = this.FindControl<ComboBox>("themeComboBox");
-            themeComboBox.Items = _viewModel.Themes;
+            themeComboBox.ItemsSource = _viewModel.Themes;
             var currentTheme = _viewModel.Themes.FirstOrDefault(t => t.Name.Equals(Program.settings.Theme, StringComparison.OrdinalIgnoreCase));
             if (currentTheme is not null)
             {
@@ -118,7 +119,7 @@ namespace Stardrop.Views
             }
 
             var preferredComboBox = this.FindControl<ComboBox>("preferredServerBox");
-            preferredComboBox.Items = descriptionToServerEnum.Keys;
+            preferredComboBox.ItemsSource = descriptionToServerEnum.Keys;
             preferredComboBox.SelectedItem = EnumParser.GetDescription(Program.settings.PreferredNexusServer);
             preferredComboBox.SelectionChanged += (sender, e) =>
             {
@@ -127,7 +128,7 @@ namespace Stardrop.Views
 
             // Handle adding the languages
             var languageComboBox = this.FindControl<ComboBox>("languageComboBox");
-            languageComboBox.Items = Program.translation.GetAvailableTranslations();
+            languageComboBox.ItemsSource = Program.translation.GetAvailableTranslations();
             languageComboBox.SelectedItem = String.IsNullOrEmpty(Program.settings.Language) ? Program.translation.GetAvailableTranslations().First() : Program.translation.GetLanguage(Program.settings.Language);
             languageComboBox.SelectionChanged += (sender, e) =>
             {
@@ -151,7 +152,7 @@ namespace Stardrop.Views
             }
 
             var groupingComboBox = this.FindControl<ComboBox>("groupingComboBox");
-            groupingComboBox.Items = descriptionToModGroupingEnum.Keys;
+            groupingComboBox.ItemsSource = descriptionToModGroupingEnum.Keys;
             groupingComboBox.SelectedItem = EnumParser.GetDescription(Program.settings.ModGroupingMethod);
             groupingComboBox.SelectionChanged += (sender, e) =>
             {
@@ -163,9 +164,6 @@ namespace Stardrop.Views
             // Cache the old settings
             _oldSettings = Program.settings.ShallowCopy();
 
-#if DEBUG
-            this.AttachDevTools();
-#endif
         }
 
         public SettingsWindow(double parentWindowHeight) : this()
@@ -209,22 +207,21 @@ namespace Stardrop.Views
 
         private async void SmapiFolderButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
-            OpenFileDialog dialog = new OpenFileDialog();
+            var fileTypes = new List<FilePickerFileType>();
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                dialog.Filters.Add(new FileDialogFilter() { Name = "StardewModdingAPI.exe", Extensions = { "exe" } });
+                fileTypes.Add(new FilePickerFileType("StardewModdingAPI.exe") { Patterns = new[] { "*.exe" } });
             }
             else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
-                dialog.Filters.Add(new FileDialogFilter() { Name = "StardewModdingAPI.dll" });
+                fileTypes.Add(new FilePickerFileType("StardewModdingAPI.dll") { Patterns = new[] { "*.dll" } });
             }
             else
             {
-                dialog.Filters.Add(new FileDialogFilter() { Name = "StardewModdingAPI.dll", Extensions = { "*" } });
+                fileTypes.Add(new FilePickerFileType("StardewModdingAPI.dll") { Patterns = new[] { "*" } });
             }
-            dialog.AllowMultiple = false;
 
-            var filePaths = await dialog.ShowAsync(this);
+            var filePaths = await StoragePicker.OpenFilePathsAsync(this, "Select SMAPI", allowMultiple: false, fileTypes, Path.GetDirectoryName(Program.settings.SMAPIFolderPath));
             if (filePaths is not null && filePaths.Count() > 0)
             {
                 this.SetSMAPIPath(filePaths.First());
@@ -233,17 +230,7 @@ namespace Stardrop.Views
 
         private async void ModFolderButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
-            OpenFolderDialog dialog = new OpenFolderDialog()
-            {
-                Title = "Select the mod folder"
-            };
-
-            if (!String.IsNullOrEmpty(Program.settings.ModFolderPath))
-            {
-                dialog.Directory = Program.settings.ModFolderPath;
-            }
-
-            var folderPath = await dialog.ShowAsync(this);
+            var folderPath = await StoragePicker.OpenFolderPathAsync(this, "Select the mod folder", Program.settings.ModFolderPath);
             if (!String.IsNullOrEmpty(folderPath))
             {
                 var modFolderPathBox = this.FindControl<TextBox>("modFolderPathBox");
@@ -261,17 +248,7 @@ namespace Stardrop.Views
 
         private async void ModInstallButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
-            OpenFolderDialog dialog = new OpenFolderDialog()
-            {
-                Title = "Select the output folder for mods installed via Stardrop"
-            };
-
-            if (!String.IsNullOrEmpty(Program.settings.ModInstallPath))
-            {
-                dialog.Directory = Program.settings.ModInstallPath;
-            }
-
-            var folderPath = await dialog.ShowAsync(this);
+            var folderPath = await StoragePicker.OpenFolderPathAsync(this, "Select the output folder for mods installed via Stardrop", Program.settings.ModInstallPath);
             if (!String.IsNullOrEmpty(folderPath))
             {
                 SetTextboxTextFocusToEnd(this.FindControl<TextBox>("modInstallPathBox"), folderPath);

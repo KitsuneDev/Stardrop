@@ -19,9 +19,6 @@ namespace Stardrop.Views
             _viewModel = new FlexibleOptionWindowViewModel();
             DataContext = _viewModel;
 
-#if DEBUG
-            this.AttachDevTools();
-#endif
         }
 
         public FlexibleOptionWindow(string messageText, string? firstButtonText = null, string? secondButtonText = null, string? thirdButtonText = null) : this()

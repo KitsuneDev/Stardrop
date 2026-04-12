@@ -3,19 +3,20 @@
         xmlns:vm="using:Stardrop.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:i="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
+        xmlns:i="using:Stardrop.Controls.Icons"
 		xmlns:i18n="clr-namespace:Stardrop.Utilities.Extension"
         mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="150"
         x:Class="Stardrop.Views.NexusLogin"
+        x:CompileBindings="False"
         Title="{i18n:Translate ui.window.nexus_login_actual.name}"
         MinWidth="500"
         MinHeight="400"
         Width="500"
-        Height="400"
         Background="{DynamicResource ThemeBackgroundBrush}"
-		ExtendClientAreaToDecorationsHint="true"
-        ExtendClientAreaChromeHints="NoChrome"
+        WindowDecorations="None"
+		ExtendClientAreaToDecorationsHint="True"
         ExtendClientAreaTitleBarHeightHint="-1"
+        SizeToContent="Height"
         Icon="/Assets/icon.ico">
 
 	<Window.Styles>
@@ -63,6 +64,7 @@
 
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="*" />
+			<ColumnDefinition Width="Auto" />
 		</Grid.ColumnDefinitions>
 
 		<Border Grid.Row="0" BorderBrush="{DynamicResource HighlightBrush}" BorderThickness="0 0 0 2" Grid.ColumnSpan="2">
@@ -71,7 +73,7 @@
 				<TextBlock Text="{i18n:Translate ui.window.nexus_login_actual.name}" Margin="-10 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="{DynamicResource ThemeForegroundBrush}" />
 			</Menu>
 		</Border>
-		<Menu Name="windowMenu" IsVisible="{Binding ShowMainMenu}" HorizontalAlignment="Right" KeyboardNavigation.TabNavigation="None" Grid.Column="1">
+		<Menu Name="windowMenu" HorizontalAlignment="Right" KeyboardNavigation.TabNavigation="None" Grid.Column="1">
 			<Button Name="exitButton" i:Attached.Icon="mdi-close" Margin="0 0 -10 0" Foreground="{DynamicResource ThemeForegroundBrush}" Background="Transparent"/>
 		</Menu>
 
@@ -93,9 +95,9 @@
 		</StackPanel>
 
 
-		<DockPanel Grid.Row="5" Margin="0 0 0 10">
-			<Button Name="applyButton" i:Attached.Icon="mdi-check" Margin="25 0 0 0" HorizontalAlignment="Left" BorderBrush="{DynamicResource HighlightBrush}" Foreground="Green" Background="Transparent"/>
-			<Button Name="cancelButton" IsCancel="True" i:Attached.Icon="mdi-cancel" Margin="0 0 25 0" HorizontalAlignment="Right" BorderBrush="{DynamicResource HighlightBrush}" Foreground="Red" Background="Transparent"/>
-		</DockPanel>
+		<StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Center" Spacing="16" Margin="0 20 0 10">
+			<Button Name="applyButton" i:Attached.Icon="mdi-check" BorderBrush="{DynamicResource HighlightBrush}" Foreground="Green" Background="Transparent"/>
+			<Button Name="cancelButton" IsCancel="True" i:Attached.Icon="mdi-cancel" BorderBrush="{DynamicResource HighlightBrush}" Foreground="Red" Background="Transparent"/>
+		</StackPanel>
 	</Grid>
 </Window>

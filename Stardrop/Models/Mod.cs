@@ -1,6 +1,4 @@
 ﻿using Avalonia.Media.Imaging;
-using Avalonia.Platform;
-using Avalonia.Shared.PlatformSupport;
 using Semver;
 using Stardrop.Models.Data.Enums;
 using Stardrop.Models.SMAPI;

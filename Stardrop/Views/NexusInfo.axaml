@@ -3,19 +3,20 @@
         xmlns:vm="using:Stardrop.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:i="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
+        xmlns:i="using:Stardrop.Controls.Icons"
 		xmlns:i18n="clr-namespace:Stardrop.Utilities.Extension"
         mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="150"
         x:Class="Stardrop.Views.NexusInfo"
+        x:CompileBindings="False"
         Title="{i18n:Translate ui.window.nexus_user.name}"
         MinWidth="350"
         MinHeight="235"
         Width="350"
-        Height="235"
         Background="{DynamicResource ThemeBackgroundBrush}"
-		ExtendClientAreaToDecorationsHint="true"
-        ExtendClientAreaChromeHints="NoChrome"
+        WindowDecorations="None"
+		ExtendClientAreaToDecorationsHint="True"
         ExtendClientAreaTitleBarHeightHint="-1"
+		SizeToContent="Height"
 		CanResize="False"
         Icon="/Assets/icon.ico">
 
@@ -62,6 +63,7 @@
 
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="*" />
+			<ColumnDefinition Width="Auto" />
 		</Grid.ColumnDefinitions>
 
 		<Border Grid.Row="0" BorderBrush="{DynamicResource HighlightBrush}" BorderThickness="0 0 0 2" Grid.ColumnSpan="2">
@@ -70,7 +72,7 @@
 				<TextBlock Text="{i18n:Translate ui.window.nexus_user.name}" Margin="-10 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="{DynamicResource ThemeForegroundBrush}" />
 			</Menu>
 		</Border>
-		<Menu Name="windowMenu" IsVisible="{Binding ShowMainMenu}" HorizontalAlignment="Right" KeyboardNavigation.TabNavigation="None" Grid.Column="1">
+		<Menu Name="windowMenu" Grid.Row="0" HorizontalAlignment="Right" KeyboardNavigation.TabNavigation="None" Grid.Column="1">
 			<Button Name="exitButton" i:Attached.Icon="mdi-close" Margin="0 0 -10 0" Foreground="{DynamicResource ThemeForegroundBrush}" Background="Transparent"/>
 		</Menu>
 

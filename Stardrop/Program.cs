@@ -1,9 +1,5 @@
 using Avalonia;
-using Avalonia.ReactiveUI;
-using Avalonia.Shared.PlatformSupport;
 using CommandLine;
-using Projektanker.Icons.Avalonia;
-using Projektanker.Icons.Avalonia.MaterialDesign;
 using Semver;
 using Stardrop.Models;
 using Stardrop.Models.Nexus;
@@ -28,8 +24,6 @@ namespace Stardrop
         internal static Helper helper;
         internal static Settings settings = new Settings();
         internal static Translation translation = new Translation();
-        internal static AssetLoader assetLoader = new AssetLoader();
-
         internal static bool onBootStartSMAPI = false;
         internal static string? nxmLink = null;
         internal static readonly string defaultProfileName = "Default";
@@ -236,11 +230,8 @@ namespace Stardrop
         public static AppBuilder BuildAvaloniaApp()
         {
             return AppBuilder.Configure<App>()
-                .UseReactiveUI()
                 .UsePlatformDetect()
-                .LogToTrace()
-                .WithIcons(container => container
-                .Register<MaterialDesignIconProvider>());
+                .LogToTrace();
         }
     }
 }

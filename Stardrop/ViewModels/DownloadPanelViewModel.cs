@@ -31,7 +31,7 @@ namespace Stardrop.ViewModels
             // handled in some way by the user
             InProgressDownloads = Downloads
                 .ToObservableChangeSet(t => t.ModUri)
-                .AutoRefresh(x => x.DownloadStatus, scheduler: RxApp.MainThreadScheduler)
+                .AutoRefresh(x => x.DownloadStatus, scheduler: RxSchedulers.MainThreadScheduler)
                 .Filter(x => x.DownloadStatus != ModDownloadStatus.Successful)
                 .Count();
         }

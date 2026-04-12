@@ -80,7 +80,7 @@ namespace Stardrop.ViewModels
 
             // DownloadedBytes to DownloadSpeedLabel conversion
             this.WhenAnyValue(x => x.DownloadedBytes)
-                .Sample(TimeSpan.FromMilliseconds(500), RxApp.MainThreadScheduler)
+                .Sample(TimeSpan.FromMilliseconds(500), RxSchedulers.MainThreadScheduler)
                 .Select(bytes =>
                 {
                     double elapsedSeconds = (DateTimeOffset.UtcNow - _startTime).TotalSeconds;
@@ -101,7 +101,7 @@ namespace Stardrop.ViewModels
 
             // DownloadedBytes and SizeBytes to DownloadProgressLabel conversion
             this.WhenAnyValue(x => x.DownloadedBytes, x => x.SizeBytes)
-                .Sample(TimeSpan.FromMilliseconds(500), RxApp.MainThreadScheduler)
+                .Sample(TimeSpan.FromMilliseconds(500), RxSchedulers.MainThreadScheduler)
                 .Select(((long Bytes, long? Total) x) =>
                 {
                     string bytesString = ToHumanReadable(x.Bytes);
@@ -136,7 +136,7 @@ namespace Stardrop.ViewModels
             {
                 // DownloadedBytes to Completion conversion
                 this.WhenAnyValue(x => x.DownloadedBytes)
-                    .Sample(TimeSpan.FromMilliseconds(500), RxApp.MainThreadScheduler)
+                    .Sample(TimeSpan.FromMilliseconds(500), RxSchedulers.MainThreadScheduler)
                     .Select(x => (DownloadedBytes / (double)SizeBytes) * 100)
                     .ToProperty(this, x => x.Completion, out _completion);                
             }

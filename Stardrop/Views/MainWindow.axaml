@@ -5,20 +5,20 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:sys="clr-namespace:System;assembly=netstandard"
-        xmlns:i="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
+        xmlns:i="using:Stardrop.Controls.Icons"
         xmlns:conv="clr-namespace:Stardrop.Converters;assembly=Stardrop"
 		xmlns:i18n="clr-namespace:Stardrop.Utilities.Extension"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="Stardrop.Views.MainWindow"
+        x:CompileBindings="False"
         Title="Stardrop"
         MinWidth="400"
         MinHeight="400"
         Width="1430"
         Height="800"
         Background="{DynamicResource ThemeBackgroundBrush}"
-        HasSystemDecorations="{Binding HasSystemDecorations}"
-        ExtendClientAreaToDecorationsHint="true"
-        ExtendClientAreaChromeHints="{Binding ChromeHint}"
+        WindowDecorations="None"
+        ExtendClientAreaToDecorationsHint="True"
         ExtendClientAreaTitleBarHeightHint="-1"
         CanResize="True"
         Opened="MainWindow_Opened"
@@ -95,9 +95,6 @@
 										CornerRadius="{DynamicResource OverlayCornerRadius}">
 									<ScrollViewer Classes="menuscroller">
 										<ItemsPresenter Name="PART_ItemsPresenter"
-														Items="{TemplateBinding Items}"
-														ItemsPanel="{TemplateBinding ItemsPanel}"
-														ItemTemplate="{TemplateBinding ItemTemplate}"
 														Margin="{DynamicResource MenuFlyoutScrollerMargin}"
 														Grid.IsSharedSizeScope="True" />
 									</ScrollViewer>
@@ -218,11 +215,7 @@
 										BorderThickness="1">
 									<ScrollViewer HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
 												  VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}">
-										<ItemsPresenter Name="PART_ItemsPresenter"
-														Items="{TemplateBinding Items}"
-														ItemsPanel="{TemplateBinding ItemsPanel}"
-														ItemTemplate="{TemplateBinding ItemTemplate}"
-														VirtualizationMode="{TemplateBinding VirtualizationMode}" />
+										<ItemsPresenter Name="PART_ItemsPresenter" />
 									</ScrollViewer>
 								</Border>
 							</Popup>
@@ -342,7 +335,7 @@
 					<NativeMenuItem Header="{i18n:Translate ui.main_window.menu_items.disable_all_mods}" Click="DisableAllMods_Click" />
 					<NativeMenuItemSeparator/>
 					<NativeMenuItem Header="{i18n:Translate ui.main_window.menu_items.check_for_stardrop_update}" Click="StardropUpdate_Click" />
-					<NativeMenuItem Header="{i18n:Translate ui.main_window.menu_items.stardrop_repository}" Command="{Binding OpenBrowser}" CommandParameter="https://github.com/Floogen/Stardrop"/>
+					<NativeMenuItem Header="{i18n:Translate ui.main_window.menu_items.stardrop_repository}" Command="{Binding OpenBrowserCommand}" CommandParameter="https://github.com/Floogen/Stardrop"/>
 					<NativeMenuItemSeparator/>
 					<NativeMenuItem Header="{i18n:Translate ui.main_window.menu_items.check_for_SMAPI_update}" Click="SMAPIUpdate_Click" />
 				</NativeMenu>
@@ -396,7 +389,7 @@
 					<MenuItem Header="{i18n:Translate ui.main_window.menu_items.disable_all_mods}" Click="DisableAllMods_Click" Classes="Bar"/>
 					<Separator/>
 					<MenuItem Header="{i18n:Translate ui.main_window.menu_items.check_for_stardrop_update}" Click="StardropUpdate_Click" Classes="Bar"/>
-					<MenuItem Header="{i18n:Translate ui.main_window.menu_items.stardrop_repository}" Classes="Bar" Command="{Binding OpenBrowser}" CommandParameter="https://github.com/Floogen/Stardrop"/>
+					<MenuItem Header="{i18n:Translate ui.main_window.menu_items.stardrop_repository}" Classes="Bar" Command="{Binding OpenBrowserCommand}" CommandParameter="https://github.com/Floogen/Stardrop"/>
 					<Separator/>
 					<MenuItem Header="{i18n:Translate ui.main_window.menu_items.check_for_SMAPI_update}" Click="SMAPIUpdate_Click" Classes="Bar"/>
 				</MenuItem>
@@ -459,7 +452,7 @@
 		</DockPanel>
 
 		<Border Name="dragOverBorder" Margin="10" DragDrop.AllowDrop="True" Grid.Row="3" Grid.ColumnSpan="2" BorderBrush="{DynamicResource HighlightBrush}" BorderThickness="2">
-			<DataGrid Name="modGrid" Foreground="{DynamicResource DataGridRowForeground}" Background="{DynamicResource DataGridRowBackground}" AlternatingRowBackground="{DynamicResource AlternativeDataGridRowBackground}" CanUserSortColumns="True" CanUserResizeColumns="True" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+			<DataGrid Name="modGrid" Foreground="{DynamicResource DataGridRowForeground}" Background="{DynamicResource DataGridRowBackground}" RowBackground="{DynamicResource DataGridRowBackground}" CanUserSortColumns="True" CanUserResizeColumns="True" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
 				<DataGrid.Resources>
 					<ContextMenu x:Key="GridColumnContextMenu" Name="gridColumnContextMenu" DataContext="{Binding $parent[DataGrid].DataContext}">
 						<MenuItem Header="{i18n:Translate ui.main_window.menu_items.context.columns.show_hide}" />
@@ -475,8 +468,8 @@
 						<MenuItem Header="{i18n:Translate ui.main_window.menu_items.context.open}">
 							<MenuItem Header="{i18n:Translate ui.main_window.menu_items.context.open_containing_folder}" Click="ModGridMenuRow_OpenFolderPath" />
 							<MenuItem Header="{i18n:Translate ui.main_window.menu_items.context.open_mod_page}" Click="ModGridMenuRow_OpenModPage" IsVisible="{Binding ModPageUri, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
-							<MenuItem Header="{i18n:Translate ui.main_window.menu_items.context.open_manifest}" Command="{Binding $parent[DataGrid].DataContext.OpenBrowser}" CommandParameter="{Binding ManifestFilePath}" />
-							<MenuItem Header="{i18n:Translate ui.main_window.menu_items.context.open_config}" Command="{Binding $parent[DataGrid].DataContext.OpenBrowser}" CommandParameter="{Binding Config.FilePath}" IsVisible="{Binding HasConfig}" />
+							<MenuItem Header="{i18n:Translate ui.main_window.menu_items.context.open_manifest}" Command="{Binding $parent[DataGrid].DataContext.OpenBrowserCommand}" CommandParameter="{Binding ManifestFilePath}" />
+							<MenuItem Header="{i18n:Translate ui.main_window.menu_items.context.open_config}" Command="{Binding $parent[DataGrid].DataContext.OpenBrowserCommand}" CommandParameter="{Binding Config.FilePath}" IsVisible="{Binding HasConfig}" />
 						</MenuItem>
 						<MenuItem Header="{i18n:Translate ui.main_window.menu_items.context.filters}">
 							<MenuItem Header="{i18n:Translate ui.main_window.menu_items.context.show_whole_mod_group}" Click="ModGridMenuRow_ShowWholeModGroup" />
@@ -566,7 +559,7 @@
 						</DataGridTemplateColumn.Header>
 						<DataGridTemplateColumn.CellTemplate>
 							<DataTemplate>
-								<ListBox Items="{Binding HardRequirements}" Background="Transparent">
+								<ListBox ItemsSource="{Binding HardRequirements}" Background="Transparent">
 									<ListBox.ItemTemplate>
 										<DataTemplate>
 											<TextBlock Text="{Binding Path=Name}" Foreground="{DynamicResource DataGridRowForeground}" />
@@ -582,10 +575,10 @@
 						</DataGridTemplateColumn.Header>
 						<DataGridTemplateColumn.CellTemplate>
 							<DataTemplate>
-								<ListBox Items="{Binding MissingRequirements}" Background="Transparent">
+								<ListBox ItemsSource="{Binding MissingRequirements}" Background="Transparent">
 									<ListBox.ItemTemplate>
 										<DataTemplate>
-											<Button Content="{Binding Path=Name}" Classes="hyperlink" Command="{Binding $parent[DataGrid].DataContext.OpenBrowser}" CommandParameter="{Binding GenericLink}" Foreground="{DynamicResource HighlightForegroundBrush}"/>
+											<Button Content="{Binding Path=Name}" Classes="hyperlink" Command="{Binding $parent[DataGrid].DataContext.OpenBrowserCommand}" CommandParameter="{Binding GenericLink}" Foreground="{DynamicResource HighlightForegroundBrush}"/>
 										</DataTemplate>
 									</ListBox.ItemTemplate>
 								</ListBox>
@@ -603,7 +596,7 @@
 						</DataGridTemplateColumn.Header>
 						<DataGridTemplateColumn.CellTemplate>
 							<DataTemplate>
-								<Button Content="{i18n:Translate ui.main_window.hyperlinks.click_to_open}" Classes="hyperlink" IsVisible="{Binding HasConfig}" Command="{Binding $parent[DataGrid].DataContext.OpenBrowser}" CommandParameter="{Binding Config.FilePath}" Foreground="{DynamicResource HighlightForegroundBrush}"/>
+								<Button Content="{i18n:Translate ui.main_window.hyperlinks.click_to_open}" Classes="hyperlink" IsVisible="{Binding HasConfig}" Command="{Binding $parent[DataGrid].DataContext.OpenBrowserCommand}" CommandParameter="{Binding Config.FilePath}" Foreground="{DynamicResource HighlightForegroundBrush}"/>
 							</DataTemplate>
 						</DataGridTemplateColumn.CellTemplate>
 					</DataGridTemplateColumn>
@@ -613,7 +606,7 @@
 						</DataGridTemplateColumn.Header>
 						<DataGridTemplateColumn.CellTemplate>
 							<DataTemplate>
-								<Button Name="statusButton" Tag="{Binding Status, Converter={StaticResource EnumToStringConverter}}" Classes="hyperlink status" Content="{Binding ParsedStatus}" Command="{Binding $parent[DataGrid].DataContext.OpenBrowser}" CommandParameter="{Binding UpdateUri}"/>
+								<Button Name="statusButton" Tag="{Binding Status, Converter={StaticResource EnumToStringConverter}}" Classes="hyperlink status" Content="{Binding ParsedStatus}" Command="{Binding $parent[DataGrid].DataContext.OpenBrowserCommand}" CommandParameter="{Binding UpdateUri}"/>
 							</DataTemplate>
 						</DataGridTemplateColumn.CellTemplate>
 					</DataGridTemplateColumn>
@@ -631,7 +624,7 @@
 			</DataGrid>
 		</Border>
 		<DockPanel Name="filterBar" Grid.Row="4" Grid.Column="0" Margin="7 0 0 5">
-			<TextBox Name="searchBox" Watermark="{i18n:Translate ui.main_window.labels.filter}" Height="10" Width="250" BorderBrush="{DynamicResource HighlightBrush}" HorizontalAlignment="Left"/>
+			<TextBox Name="searchBox" PlaceholderText="{i18n:Translate ui.main_window.labels.filter}" Height="10" Width="250" BorderBrush="{DynamicResource HighlightBrush}" HorizontalAlignment="Left"/>
 			<Button Name="searchFilterColumnButton" Content="{i18n:Translate ui.main_window.buttons.no_search_filters}" VerticalAlignment="Center" Margin="5 0 0 0" Foreground="{DynamicResource ThemeForegroundBrush}" Background="Transparent" BorderBrush="{DynamicResource HighlightBrush}">
 				<Button.Flyout>
 					<Flyout FlyoutPresenterClasses="FilterBoxFlyout">
@@ -674,7 +667,7 @@
                     <Button Name="nexusModsButton" Content="{Binding NexusStatus}" Grid.Column="0" Classes="hyperlink" HorizontalAlignment="Right" Padding="8,0,8,0" VerticalAlignment="Center"/>
                     <TextBlock Text="{Binding NexusLimits}" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="{DynamicResource ThemeForegroundBrush}" IsVisible="{Binding ShowEndorsements}"/>
                     <TextBlock Text=" | " Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="{DynamicResource ThemeForegroundBrush}"/>
-                    <Button Content="{Binding Version}" Grid.Column="3" Classes="hyperlink" Command="{Binding OpenBrowser}" CommandParameter="https://www.nexusmods.com/stardewvalley/mods/10455" HorizontalAlignment="Right" Padding="8,0,8,0" VerticalAlignment="Center"/>
+                    <Button Content="{Binding Version}" Grid.Column="3" Classes="hyperlink" Command="{Binding OpenBrowserCommand}" CommandParameter="https://www.nexusmods.com/stardewvalley/mods/10455" HorizontalAlignment="Right" Padding="8,0,8,0" VerticalAlignment="Center"/>
                 </Grid>
             </Grid>
 		</Border>

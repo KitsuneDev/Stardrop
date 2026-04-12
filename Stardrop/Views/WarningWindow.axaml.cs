@@ -26,9 +26,6 @@ namespace Stardrop.Views
             this.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             this.SizeToContent = SizeToContent.Height;
 
-#if DEBUG
-            this.AttachDevTools();
-#endif
         }
 
         public WarningWindow(string warningText, string buttonText) : this()

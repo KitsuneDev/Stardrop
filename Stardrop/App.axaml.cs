@@ -2,9 +2,7 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.Styling;
-using Stardrop.Models.Nexus.Web;
 using Stardrop.Utilities;
-using Stardrop.Utilities.External;
 using Stardrop.Views;
 using System;
 using System.Collections.Generic;
@@ -47,23 +45,12 @@ namespace Stardrop
             Current.Styles.Insert(0, !themes.ContainsKey(Program.settings.Theme) ? themes.Values.First() : themes[Program.settings.Theme]);
         }
 
-        private async void OnUrlsOpen(object? sender, UrlOpenedEventArgs e, MainWindow mainWindow)
-        {
-            foreach (string? url in e.Urls.Where(u => String.IsNullOrEmpty(u) is false))
-            {
-                await mainWindow.ProcessNXMLink(new NXM() { Link = url, Timestamp = DateTime.Now });
-            }
-        }
-
         public override void OnFrameworkInitializationCompleted()
         {
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 var mainWindow = new MainWindow();
                 desktop.MainWindow = mainWindow;
-
-                // Register events
-                this.UrlsOpened += (sender, e) => OnUrlsOpen(sender, e, mainWindow);
             }
 
             base.OnFrameworkInitializationCompleted();
