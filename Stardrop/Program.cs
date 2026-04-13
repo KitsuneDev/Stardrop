@@ -1,4 +1,5 @@
 using Avalonia;
+using ReactiveUI.Avalonia;
 using CommandLine;
 using Semver;
 using Stardrop.Models;
@@ -231,7 +232,12 @@ namespace Stardrop
         {
             return AppBuilder.Configure<App>()
                 .UsePlatformDetect()
-                .LogToTrace();
+                .LogToTrace()
+                .UseReactiveUI(rx =>
+                {
+                    rx.WithViewsFromAssembly(Assembly.GetExecutingAssembly());
+                })
+                .RegisterReactiveUIViewsFromEntryAssembly();
         }
     }
 }
